@@ -10,12 +10,15 @@ public class EmailExtractionP3 {
 
         String fileName = "email/sample.txt";
         // allowable email form
-        Pattern emailRegex = Pattern.compile("[a-zA-Z0-9._+-]+(@[a-zA-Z0-9.-]+\\.[a-zA-Z]+)");
+        Pattern emailRegex = Pattern.compile("[a-z0-9]+[a-z0-9._+-]+[a-z0-9]+(@[a-z0-9]+[a-zA-Z0-9.-]+\\.[a-zA-Z]+)");
+        // pattern that is not valid
+        Pattern patternBad = Pattern.compile("\\.{2,}|\\_{2,}|\\+{2,}|\\-{2,}");
+
 
         // turn txt to ArrayList
         ArrayList<String> text = convertToArrayList(fileName);
 
-        ArrayList<String> emailFilter1 = filterAndGetDomain(emailRegex, text);
+        ArrayList<String> emailFilter1 = filterAndGetDomain(emailRegex, patternBad, text);
 
         HashMap<String, Integer> dict = convertToHashMap(emailFilter1);
         System.out.println(dict);
@@ -30,7 +33,7 @@ public class EmailExtractionP3 {
     }
 
     // method to filter
-    public static ArrayList<String> filterAndGetDomain(Pattern regex, ArrayList<String> list) {
+    public static ArrayList<String> filterAndGetDomain(Pattern regex, Pattern badRegex, ArrayList<String> list) {
 
         ArrayList<String> filtered = new ArrayList<>();
 
@@ -38,7 +41,12 @@ public class EmailExtractionP3 {
         for (String s: list) {
             Matcher matcher = regex.matcher(s);
             while (matcher.find()) {
-                filtered.add(matcher.group(1));
+                // given that the string follows the form of an email
+                // need to check that it is NOT degenerate
+                Matcher matcher2 = badRegex.matcher(matcher.group());
+                if (!matcher2.find()) {
+                    filtered.add(matcher.group(1));
+                }
             }
         }
         return filtered;
@@ -73,6 +81,7 @@ public class EmailExtractionP3 {
 
         return dict;
     }
+
 
 
 

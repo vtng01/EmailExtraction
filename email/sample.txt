@@ -1999,3 +1999,13 @@
  dashis daringnesses endocrine neuroblasts almude decrements consumerships abjuration Tarahumara's teetotaler
  hornlessnesses brushed Panchatantra face disco Limburger sirring assimilates lula_mariko@outlook.com antecedent's
  outlook.com ticket my-email.net microscope's tribunicial flues sacrosanctness recomposed unspectacled
+ ###############################                                        #################################
+ --------- this is my edit   -------------   SO FAR TOTAL OF ALL EMAIL ADDRESSES IS 2010
+ this.is..my.degenerate@softwire.com this__is_my_other___Degenerate@softwire.comet.net
+ AT THIS LINE, THE COUNT 261 and 40 respectively for softwire.com and softwire.comet.net AND TOTAL IS STILL 2010
+ this.new.email@softwire.com and this.one@softwire.comet.net should increment their++count@
+ AT THIS LINE THEIR COUNTS SHOULD BE 262 and 41 respectively SO TOTAL COUNT IS 2012
+  then.how_about_this.@softwire.com       why.is.this.not@.registered.com    <--- these should not be counted
+  I expect to still see 262 for softwire.com
+  .how.about.this@softwire.com  <-- should not be counted
+  SO COUNT TOTAL IS STILL 2012

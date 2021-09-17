@@ -7,10 +7,11 @@ public class test {
         String s= "hello friend31.lie2@ni.123.com  my@myhome.com hielaelro   asdasdad 12+3@na.m.net bye.hi.my@am.com  hasdas123..123.43@@hasd.c22 " +
                 "......@.....     hi.....byee..hello@facebook.com";
         Pattern pattern = Pattern.compile("[a-zA-Z0-9._+-]+(@[a-zA-Z0-9.-]+\\.[a-zA-Z]+)");
-        Pattern patternBad = Pattern.compile("^(?!.*(\\.{2,}|\\_{2,}|\\+{2,}|\\-{2,}))");
+        Pattern patternBad = Pattern.compile("\\.{2,}|\\_{2,}|\\+{2,}|\\-{2,}");
         Matcher matcher = pattern.matcher(s);
         ArrayList<String> acceptedOnce = new ArrayList<>();
         ArrayList<String> filtered = new ArrayList<>();
+
 
         int counter = 0;
 
@@ -22,8 +23,20 @@ public class test {
             acceptedOnce.add(matcher.group());
         }
 
+        for (String str: acceptedOnce) {
+            Matcher matcher1 = patternBad.matcher(str);
+            // if it does not contain the repeated .. __ -- ++ etc
+            System.out.println(str);
+            System.out.println(matcher1.find());
+            if (!matcher1.find()) {
+                filtered.add(str);
+            }
+        }
+
         System.out.println("Accepted group, no filter");
         System.out.println(acceptedOnce);
+        System.out.println("filtered group");
+        System.out.println(filtered);
 
 
 
