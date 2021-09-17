@@ -10,7 +10,7 @@ public class EmailExtractionP3 {
 
         String fileName = "email/sample.txt";
         // allowable email form
-        Pattern emailRegex = Pattern.compile("[a-z0-9]+[a-z0-9._+-]+[a-z0-9]+(@[a-z0-9]+[a-zA-Z0-9.-]+\\.[a-zA-Z]+)");
+        Pattern emailRegex = Pattern.compile("[a-z0-9]+[a-z0-9._+-]+[a-z0-9]+(@[a-z0-9]+[a-z0-9.-]+\\.[a-z]+)", Pattern.CASE_INSENSITIVE);
         // pattern that is not valid
         Pattern patternBad = Pattern.compile("\\.{2,}|\\_{2,}|\\+{2,}|\\-{2,}");
 
