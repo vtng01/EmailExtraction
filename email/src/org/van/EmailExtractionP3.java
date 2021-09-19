@@ -10,17 +10,16 @@ public class EmailExtractionP3 {
 
         String fileName = "email/sample.txt";
         // allowable email form
-        Pattern emailRegex = Pattern.compile("[a-z0-9._+-]+[a-z0-9]+(@[a-z0-9]+[a-z0-9.-]+\\.[a-z]+)", Pattern.CASE_INSENSITIVE);
+        String emailRegex = "[a-z0-9._+-]+[a-z0-9]+(@[a-z0-9]+[a-z0-9.-]+\\.[a-z]+)";
         // pattern that is not valid
-        Pattern patternBad = Pattern.compile("\\.{2,}|\\_{2,}|\\+{2,}|\\-{2,}");
-
-
+        // feel free to add more sequences and characters that are not valid for emails in badEmailRegex
+        String badEmailRegex = "^[^a-z0-9]|\\.{2,}|\\_{2,}|\\+{2,}|\\-{2,}";
         // turn txt to ArrayList
         ArrayList<String> text = convertToArrayList(fileName);
 
-        ArrayList<String> emailFilter1 = filterAndGetDomain(emailRegex, patternBad, text);
+        ArrayList<String> emailFilter = filterAndGetDomain(emailRegex, badEmailRegex, text);
 
-        HashMap<String, Integer> dict = convertToHashMap(emailFilter1);
+        HashMap<String, Integer> dict = convertToHashMap(emailFilter);
         System.out.println(dict);
 
         // final check for the count of @
@@ -33,17 +32,19 @@ public class EmailExtractionP3 {
     }
 
     // method to filter
-    public static ArrayList<String> filterAndGetDomain(Pattern regex, Pattern badRegex, ArrayList<String> list) {
+    public static ArrayList<String> filterAndGetDomain(String regex, String badRegex, ArrayList<String> list) {
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Pattern badPattern = Pattern.compile(badRegex, Pattern.CASE_INSENSITIVE);
 
         ArrayList<String> filtered = new ArrayList<>();
 
         // filter loop
         for (String s: list) {
-            Matcher matcher = regex.matcher(s);
+            Matcher matcher = pattern.matcher(s);
             while (matcher.find()) {
                 // given that the string follows the form of an email
                 // need to check that it is NOT degenerate
-                Matcher matcher2 = badRegex.matcher(matcher.group());
+                Matcher matcher2 = badPattern.matcher(matcher.group());
                 if (!matcher2.find()) {
                     filtered.add(matcher.group(1));
                 }
