@@ -1,33 +1,41 @@
 package org.van;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Scanner;
-import java.util.HashMap;
+
 public class EmailExtractionP3 {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
 
         String fileName = "email/sample.txt";
         // allowable email form
-        String emailRegex = "[a-z0-9._+-]+[a-z0-9]+(@[a-z0-9]+[a-z0-9.-]+\\.[a-z]+)";
+        String emailRegex = "[a-z0-9._+-]+[a-z0-9]+(?<domain>@(?<domainTop>[a-z0-9]+)[a-z0-9.-]+\\.[a-z]+)";
         // pattern that is not valid
         // feel free to add more sequences and characters that are not valid for emails in badEmailRegex
         String badEmailRegex = "^[^a-z0-9]|\\.{2,}|\\_{2,}|\\+{2,}|\\-{2,}";
         // turn txt to ArrayList
         ArrayList<String> text = convertToArrayList(fileName);
 
-        ArrayList<String> emailFilter = filterAndGetDomain(emailRegex, badEmailRegex, text);
+        ArrayList<String> emailList = filterAndGetDomain(emailRegex, badEmailRegex, text);
 
-        HashMap<String, Integer> dict = convertToHashMap(emailFilter);
-        System.out.println(dict);
+        HashMap<String, Integer> dictOfEmailDomains = convertToHashMap(emailList);
+        System.out.println(dictOfEmailDomains);
 
         // final check for the count of @
         int sum = 0;
-        for (int i: dict.values()) {
+        for (int i: dictOfEmailDomains.values()) {
             sum+= i;
         }
+
         System.out.println(sum);
+        printTopDomains(dictOfEmailDomains);
+
+        System.out.println("Please enter the minimum occurrence of domains you wish to see:");
+        int frequency = scanner.nextInt();
+        printTopDomainsByCount(dictOfEmailDomains, frequency);
+
 
     }
 
@@ -40,52 +48,60 @@ public class EmailExtractionP3 {
 
         // filter loop
         for (String s: list) {
-            Matcher matcher = pattern.matcher(s);
-            while (matcher.find()) {
+            Matcher emailFilter = pattern.matcher(s);
+            while (emailFilter.find()) {
                 // given that the string follows the form of an email
                 // need to check that it is NOT degenerate
-                Matcher matcher2 = badPattern.matcher(matcher.group());
-                if (!matcher2.find()) {
-                    filtered.add(matcher.group(1));
+                Matcher degenerateFilter = badPattern.matcher(emailFilter.group());
+                if (!degenerateFilter.find()) {
+                    filtered.add(emailFilter.group("domain"));
                 }
             }
         }
         return filtered;
     }
 
-    // get hashmap
-    public static ArrayList<String> convertToArrayList (String fileName) {
 
-        ArrayList<String> list = new ArrayList<>();
+    public static ArrayList<String> convertToArrayList (String fileName) {
+        // generate new array list to store each line of text from document
+        ArrayList<String> myList = new ArrayList<>();
 
         try (Scanner scanner = new Scanner(Paths.get(fileName))) {
             while (scanner.hasNextLine()) {
-                list.add(scanner.nextLine());
+                myList.add(scanner.nextLine());
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
 
-        return list;
+        return myList;
     }
 
+    // get hashmap
     public static HashMap<String, Integer> convertToHashMap(ArrayList<String> list) {
         HashMap<String, Integer> dict = new HashMap<>();
 
-        for (String d: list) {
-            if (dict.containsKey(d)) {
-                dict.put(d, dict.get(d) + 1);
+        for (String line: list) {
+            if (dict.containsKey(line)) {
+                dict.put(line, dict.get(line) + 1);
             } else {
-                dict.put(d, 1);
+                dict.put(line, 1);
             }
         }
-
         return dict;
     }
 
+    public static void printTopDomains(HashMap<String, Integer> myDict) {
+        myDict.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).
+                limit(10).forEach(System.out::println);
+    }
 
-
-
+    public static void printTopDomainsByCount(HashMap<String, Integer> myDict, Integer frequency) {
+        myDict.entrySet().stream().
+                sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).
+                filter(entry -> entry.getValue() >= frequency).
+                forEach(System.out::println);
+    }
 }
 
 
